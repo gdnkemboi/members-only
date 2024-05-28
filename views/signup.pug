@@ -1,0 +1,23 @@
+extends layout 
+
+block content 
+    h1=title 
+    form(method="POST")
+        label(for="name") Name:
+        input(id="name" type="text" placeholder="Name" required name="name" value=(user===udefined ? "" : user.name))
+        br
+        label(for="email") Email: 
+        input(id="email" type="email" placeholder="email@example.com" required name="email" value=(user===udefined ? "" : user.email))
+        br
+        label(for="password") Password: 
+        input(id="password" type="password" placeholder="password" required name="password" value=(user===udefined ? "" : user.password))
+        br
+        label(for="confirmPassword")  Confirm Password: 
+        input(id="confirmPassword" type="password" placeholder="password" required name="passwordConfirmation" value=(user===udefined ? "" : passwordConfirmation))
+        br
+        button Sign Up
+
+    if errors 
+        ul 
+            for error in errors 
+                li!= error.msg

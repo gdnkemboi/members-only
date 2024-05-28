@@ -2,13 +2,13 @@ var express = require("express");
 var router = express.Router();
 const userController = require("../controllers/userController");
 
-router.get("/sign_up", userController.signUpGET);
+router.get("/signup", userController.signUpGET);
 
-router.post("/sign_up", userController.signUpPOST);
+router.post("/signup", userController.signUpPOST);
 
-router.get("/log_in", userController.logInGET);
+router.get("/login", userController.logInGET);
 
-router.post("/log_in", userController.logInPOST);
+router.post("/login", userController.logInPOST);
 
 router.get("/logout", userController.logOut);
 
