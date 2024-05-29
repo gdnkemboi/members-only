@@ -4,7 +4,7 @@ block content
     h1=title 
     form(method="POST")
         label(for="name") Name:
-        input(id="name" type="text" placeholder="Name" required name="name" value=(user===udefined ? "" : user.name))
+        input(id="name" type="text" placeholder="Name" required name="username" value=(user===udefined ? "" : user.username))
         br
         label(for="email") Email: 
         input(id="email" type="email" placeholder="email@example.com" required name="email" value=(user===udefined ? "" : user.email))

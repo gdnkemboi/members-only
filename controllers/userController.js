@@ -2,14 +2,7 @@ const User = require("../models/user");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-
-exports.logInGET = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: LogIn GET");
-});
-
-exports.logInPOST = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Log In POST");
-});
+const passport = require("passport");
 
 exports.signUpGET = asyncHandler(async (req, res, next) => {
   res.render("signup", { title: "Sign Up" });
@@ -32,7 +25,11 @@ const confirmPassword = (value, { req }) => {
 };
 
 exports.signUpPOST = [
-  body("name").trim().notEmpty().withMessage("Name cannot be empty").escape(),
+  body("username")
+    .trim()
+    .notEmpty()
+    .withMessage("Username cannot be empty")
+    .escape(),
   body("email")
     .trim()
     .notEmpty()
@@ -60,7 +57,7 @@ exports.signUpPOST = [
 
     if (!errors.isEmpty()) {
       const user = new User({
-        name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: req.body.password,
       });
@@ -76,19 +73,55 @@ exports.signUpPOST = [
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
       const user = new User({
-        name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: hashedPassword,
       });
       await user.save();
-      res.redirect("/");
+      res.redirect("/login");
     }
   }),
 ];
 
-exports.logOut = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Log Out");
-});
+exports.logInGET = (req, res, next) => {
+  res.render("login", {
+    title: "Log In",
+    messages: req.flash("error"),
+    formData: req.session.formData || {},
+  });
+  delete req.session.formData; // Clear the form data after it's been used
+};
+
+exports.logInPOST = (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.flash("error", info.message); // Assuming info contains an error message
+      req.session.formData = {
+        username: req.body.username,
+        password: req.body.password,
+      };
+      return res.redirect("/login");
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.redirect("/");
+    });
+  })(req, res, next);
+};
+
+exports.logOut = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+};
 
 exports.account = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Account");
