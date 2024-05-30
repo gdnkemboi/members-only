@@ -10,12 +10,13 @@ const LocalStrategy = require("passport-local").Strategy;
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcryptjs");
-const flash = require("connect-flash")
+const flash = require("connect-flash");
 
 const User = require("./models/user");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+const messagesRouter = require("./routes/messages");
 
 var app = express();
 
@@ -39,7 +40,7 @@ app.use(
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
   })
 );
-app.use(flash())
+app.use(flash());
 app.use(passport.session());
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -79,6 +80,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/", usersRouter);
+app.use("/", messagesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

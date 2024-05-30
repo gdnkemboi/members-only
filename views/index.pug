@@ -4,7 +4,23 @@ block content
   h1= title
   if user 
     p Welcome #{user.username}
-    a(href="/logout") Log Out
+    a(href="/logout") Log Out |
+    a(href="/message/new")  Add new message
   else 
     p Welcome to #{title}
     a(href="/login") Log In
+  hr
+  
+  if messages.length
+    h3 Messages
+    hr
+    div.messages
+      for message in messages 
+        .message 
+          div
+            div.title #{`${message.title} by ${message.author.username}`}
+          div.body=message.body 
+          div.timestamp=message.timestamp 
+          hr
+  else 
+    p No messages yet.

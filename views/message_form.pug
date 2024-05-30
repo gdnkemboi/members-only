@@ -1,0 +1,21 @@
+extends layout 
+
+block content
+    h1=title 
+
+    form(method="POST")
+        label(for="titlle") Title: 
+        br
+        input(type="text" name="title" placeholder="Title" value=(message===undefined ? '' : message.title)) 
+        br
+        br
+        label(for="body") Body:
+        br
+        textarea(name="body" placeholder="Some Text...")=(message===undefined ? '' : message.body)
+        br
+        button Submit
+
+    if errors
+        ul
+            for error in errors
+                li!= error.msg
